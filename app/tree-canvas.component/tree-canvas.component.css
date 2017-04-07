@@ -1,0 +1,9 @@
+.tree-canvas {
+    width: 1000px;
+    height: 500px;
+    border: solid 1px red;
+}
+
+.buttons-wrapper {
+    padding: 5px;
+}
