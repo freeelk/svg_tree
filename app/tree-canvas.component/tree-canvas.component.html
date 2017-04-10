@@ -16,6 +16,9 @@
         (move) = "shapeMoveHandler($event)"
     ></tree-shape>
 
-    <tree-link [xFrom]="link.xFrom" [yFrom]="link.yFrom" [xTo]="link.xTo" [yTo]="link.yTo"></tree-link>
+    <tree-link *ngFor="let link of links" 
+        [shapeFrom]="getShape(link.shapeFromId)"
+        [shapeTo]="getShape(link.shapeToId)"
+    ></tree-link>
    
 </svg>

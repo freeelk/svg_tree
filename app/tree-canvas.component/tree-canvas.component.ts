@@ -1,51 +1,57 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { TreeShape } from '../tree-shape.component/tree-shape.component';
 import { TreeLink } from '../tree-link.component/tree-link.component';
 import { LinkPosition, LinkPositions } from '../shared/link-positions';
+import { Shape } from '../shared/shape';
+import { Link } from '../shared/link';
 import snap = require('snapsvg');
 import interact = require('interactjs');
 
-class Shape {
-    id: string;
-    x: number;
-    y: number;
-    xInit: number;
-    yInit: number;
-    width: number;
-    height: number;
-    selected: boolean;
+
+class PositionsFromTo {
+    positionFrom: LinkPosition;
+    positionTo: LinkPosition;
 }
 
-class Link {
-    xFrom: number;
-    yFrom: number;
-    xTo: number;
-    yTo: number;
-}
 
 @Component({
     moduleId: module.id,
     selector: 'tree-canvas',
     templateUrl: 'tree-canvas.component.html',
     styleUrls: ['tree-canvas.component.css'],
+    outputs: ['shapeMove']
 
 })
 export class TreeCanvas implements OnInit {
     canvas: any;
     shapes: Array<Shape>;
+    links: Array<Link>;
 
     shapeFromId: string;
     shapeToId: string;
     link: Link;
 
+    @ViewChildren(TreeLink)
+    private treeLinks: QueryList<TreeLink>;
+
+    shapeMove: EventEmitter<string> = new EventEmitter<string>();
+
     constructor() {
         console.clear();
         this.canvas = snap('#tree-canvas');
         this.shapes = [
-            { id: 'shape-0', x: 50, y: 50, xInit: 10, yInit: 10, width: 100, height: 20, selected: false },
-            { id: 'shape-1', x: 500, y: 10, xInit: 500, yInit: 10, width: 100, height: 20, selected: true },
+            { id: 'shape-0', x: 500, y: 10, xInit: 500, yInit: 10, width: 100, height: 20, selected: true },
+            { id: 'shape-1', x: 500, y: 60, xInit: 500, yInit: 60, width: 100, height: 20, selected: false },
             { id: 'shape-2', x: 600, y: 200, xInit: 600, yInit: 200, width: 100, height: 20, selected: false },
-            { id: 'shape-3', x: 340, y: 230, xInit: 340, yInit: 230, width: 100, height: 20, selected: false }
+            { id: 'shape-3', x: 340, y: 230, xInit: 340, yInit: 230, width: 100, height: 20, selected: false },
+            { id: 'shape-4', x: 200, y: 230, xInit: 200, yInit: 230, width: 100, height: 20, selected: false }
+        ];
+
+        this.links = [
+            { shapeFromId: 'shape-0', shapeToId: 'shape-1'},
+            { shapeFromId: 'shape-1', shapeToId: 'shape-2'},
+            { shapeFromId: 'shape-1', shapeToId: 'shape-3'},
+            { shapeFromId: 'shape-0', shapeToId: 'shape-4'}
         ];
 
         this.shapeFromId = 'shape-1';
@@ -77,10 +83,6 @@ export class TreeCanvas implements OnInit {
                 y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy,
                 id = target.getAttribute('id');
 
-            //let shape = that.getShape(id);
-            //shape.x = Math.round(shape.xInit + x);
-            //shape.y = Math.round(shape.yInit + y);
-
             target.style.webkitTransform =
                 target.style.transform =
                 'translate(' + x + 'px, ' + y + 'px)';
@@ -89,6 +91,7 @@ export class TreeCanvas implements OnInit {
             target.setAttribute('data-y', y);
         }
 
+        
         this.setLink(this.shapeFromId, this.shapeToId);
 
     }
@@ -128,78 +131,58 @@ export class TreeCanvas implements OnInit {
     shapeMoveHandler(event) {
         let shape = this.getShape(event.id);
         shape.x = event.x;
-        shape.y = event.y;
+        shape.y = event.y;    
+        //this.shapeMove.emit(event.id);
 
-        let shapeTo = this.getShape(this.shapeToId);
-        let shapeFrom = this.getShape(this.shapeFromId);
-
-        if (event.id === this.shapeFromId) {
-            let linkPositionsFrom = new LinkPositions(event.id, event.x, event.y, shapeFrom.width, shapeFrom.height);
-            let linkPositionsTo = new LinkPositions(shapeTo.id, shapeTo.x, shapeTo.y, shapeTo.width, shapeTo.height);
-
-            if (Math.abs(shapeTo.y - shapeFrom.y) < 40) {
-                if (shapeFrom.x < shapeTo.x) {
-                    let linkPositionFrom = linkPositionsFrom.right;
-                    let linkPositionTo = linkPositionsTo.left;
-                } else {
-                    let linkPositionFrom = linkPositionsFrom.left;
-                    let linkPositionTo = linkPositionsTo.right;
-                }
-            } else {
-                if (shapeFrom.y < shapeTo.y) {
-                    let linkPositionFrom = linkPositionsFrom.bottom;
-                } else {
-                    let linkPositionFrom = linkPositionsFrom.top;
-                }
-                if (shapeTo.y < shapeFrom.y) {
-                    let linkPositionTo = linkPositionsTo.bottom;
-                } else {
-                    let linkPositionTo = linkPositionsTo.top;
-                }
-            }
-
-            this.link.xFrom = linkPositionFrom.x;
-            this.link.yFrom = linkPositionFrom.y;
-            this.link.xTo = linkPositionTo.x;
-            this.link.yTo = linkPositionTo.y;
-        }
-
-
-        if (event.id === this.shapeToId) {
-            let linkPositions = new LinkPositions(event.id, event.x, event.y, shapeTo.width, shapeTo.height);
-
-            if (shapeFrom.y < shapeTo.y) {
-                let linkPosition = linkPositions.bottom;
-            } else {
-                let linkPosition = linkPositions.top;
-            }
-            if (shapeTo.y < shapeFrom.y) {
-                let linkPosition = linkPositions.bottom;
-            } else {
-                let linkPosition = linkPositions.top;
-            }
-
-            this.link.xTo = linkPosition.x;
-            this.link.yTo = linkPosition.y;
-        }
+        this.treeLinks.forEach(item=> {
+            item.onShapeMove(event.id);
+        });
+        //this.setLink(this.shapeFromId, this.shapeToId);
     }
+
 
     setLink(shapeIdFrom: string, shapeIdTo: string) {
         let shapeFrom = this.getShape(shapeIdFrom);
         let shapeTo = this.getShape(shapeIdTo);
+        let linkPositionsFromTo = this.getLinkPositionsFromTo(shapeFrom, shapeTo);
 
-        let shapeFromLinkPositions = new LinkPositions(shapeFrom.id, shapeFrom.x, shapeFrom.y, shapeFrom.width, shapeFrom.height);
-        let shapeToLinkPositions = new LinkPositions(shapeTo.id, shapeTo.x, shapeTo.y, shapeTo.width, shapeTo.height);
-        this.calcLinkCoordinates(shapeFromLinkPositions, shapeToLinkPositions);
-    }
-
-    calcLinkCoordinates(shapeFromLinkPositions: LinkPositions, shapeToLinkPositions: LinkPositions) {
         this.link = new Link();
-        this.link.xFrom = shapeFromLinkPositions.bottom.x;
-        this.link.yFrom = shapeFromLinkPositions.bottom.y;
-        this.link.xTo = shapeToLinkPositions.top.x;
-        this.link.yTo = shapeToLinkPositions.top.y;
+
+        this.link.xFrom = linkPositionsFromTo.positionFrom.x;
+        this.link.yFrom = linkPositionsFromTo.positionFrom.y;
+        this.link.xTo = linkPositionsFromTo.positionTo.x;
+        this.link.yTo = linkPositionsFromTo.positionTo.y;
+
+        console.log(shapeTo.x, shapeTo.y, this.link.xTo, this.link.yTo);
     }
 
+
+    private getLinkPositionsFromTo(shapeFrom: Shape, shapeTo: Shape):PositionsFromTo {
+        const LIMIT_SHAPES_DISTANCE = 60;
+        let result = new PositionsFromTo;
+        
+        let linkPositionsFrom = new LinkPositions(shapeFrom.id, shapeFrom.x, shapeFrom.y, shapeFrom.width, shapeFrom.height);
+        let linkPositionsTo = new LinkPositions(shapeTo.id, shapeTo.x, shapeTo.y, shapeTo.width, shapeTo.height);
+
+         if (Math.abs(shapeTo.y - shapeFrom.y) < LIMIT_SHAPES_DISTANCE) { 
+            if (shapeFrom.x < shapeTo.x) { 
+                result.positionFrom = linkPositionsFrom.right;   
+                result.positionTo = linkPositionsTo.left; 
+            } else {
+                result.positionFrom = linkPositionsFrom.left;   
+                result.positionTo = linkPositionsTo.right; 
+            }
+         } else {
+             if (shapeFrom.y < shapeTo.y) { 
+                result.positionFrom = linkPositionsFrom.bottom;   
+                result.positionTo = linkPositionsTo.top; 
+            } else {
+                result.positionFrom = linkPositionsFrom.top;   
+                result.positionTo = linkPositionsTo.bottom; 
+            }
+         }
+
+        return result;
+    };
 
 }

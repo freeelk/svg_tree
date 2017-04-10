@@ -10,28 +10,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
+var tree_link_component_1 = require("../tree-link.component/tree-link.component");
 var link_positions_1 = require("../shared/link-positions");
+var link_1 = require("../shared/link");
 var snap = require("snapsvg");
 var interact = require("interactjs");
-var Shape = (function () {
-    function Shape() {
+var PositionsFromTo = (function () {
+    function PositionsFromTo() {
     }
-    return Shape;
-}());
-var Link = (function () {
-    function Link() {
-    }
-    return Link;
+    return PositionsFromTo;
 }());
 var TreeCanvas = (function () {
     function TreeCanvas() {
+        this.shapeMove = new core_1.EventEmitter();
         console.clear();
         this.canvas = snap('#tree-canvas');
         this.shapes = [
-            { id: 'shape-0', x: 50, y: 50, xInit: 10, yInit: 10, width: 100, height: 20, selected: false },
-            { id: 'shape-1', x: 500, y: 10, xInit: 500, yInit: 10, width: 100, height: 20, selected: true },
+            { id: 'shape-0', x: 500, y: 10, xInit: 500, yInit: 10, width: 100, height: 20, selected: true },
+            { id: 'shape-1', x: 500, y: 60, xInit: 500, yInit: 60, width: 100, height: 20, selected: false },
             { id: 'shape-2', x: 600, y: 200, xInit: 600, yInit: 200, width: 100, height: 20, selected: false },
-            { id: 'shape-3', x: 340, y: 230, xInit: 340, yInit: 230, width: 100, height: 20, selected: false }
+            { id: 'shape-3', x: 340, y: 230, xInit: 340, yInit: 230, width: 100, height: 20, selected: false },
+            { id: 'shape-4', x: 200, y: 230, xInit: 200, yInit: 230, width: 100, height: 20, selected: false }
+        ];
+        this.links = [
+            { shapeFromId: 'shape-0', shapeToId: 'shape-1' },
+            { shapeFromId: 'shape-1', shapeToId: 'shape-2' },
+            { shapeFromId: 'shape-1', shapeToId: 'shape-3' },
+            { shapeFromId: 'shape-0', shapeToId: 'shape-4' }
         ];
         this.shapeFromId = 'shape-1';
         this.shapeToId = 'shape-2';
@@ -53,9 +58,6 @@ var TreeCanvas = (function () {
         });
         function dragMoveListener(event) {
             var target = event.target, x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx, y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy, id = target.getAttribute('id');
-            //let shape = that.getShape(id);
-            //shape.x = Math.round(shape.xInit + x);
-            //shape.y = Math.round(shape.yInit + y);
             target.style.webkitTransform =
                 target.style.transform =
                     'translate(' + x + 'px, ' + y + 'px)';
@@ -96,80 +98,64 @@ var TreeCanvas = (function () {
         var shape = this.getShape(event.id);
         shape.x = event.x;
         shape.y = event.y;
-        var shapeTo = this.getShape(this.shapeToId);
-        var shapeFrom = this.getShape(this.shapeFromId);
-        if (event.id === this.shapeFromId) {
-            var linkPositionsFrom = new link_positions_1.LinkPositions(event.id, event.x, event.y, shapeFrom.width, shapeFrom.height);
-            var linkPositionsTo = new link_positions_1.LinkPositions(shapeTo.id, shapeTo.x, shapeTo.y, shapeTo.width, shapeTo.height);
-            if (Math.abs(shapeTo.y - shapeFrom.y) < 40) {
-                if (shapeFrom.x < shapeTo.x) {
-                    var linkPositionFrom = linkPositionsFrom.right;
-                    var linkPositionTo = linkPositionsTo.left;
-                }
-                else {
-                    var linkPositionFrom = linkPositionsFrom.left;
-                    var linkPositionTo = linkPositionsTo.right;
-                }
-            }
-            else {
-                if (shapeFrom.y < shapeTo.y) {
-                    var linkPositionFrom = linkPositionsFrom.bottom;
-                }
-                else {
-                    var linkPositionFrom = linkPositionsFrom.top;
-                }
-                if (shapeTo.y < shapeFrom.y) {
-                    var linkPositionTo = linkPositionsTo.bottom;
-                }
-                else {
-                    var linkPositionTo = linkPositionsTo.top;
-                }
-            }
-            this.link.xFrom = linkPositionFrom.x;
-            this.link.yFrom = linkPositionFrom.y;
-            this.link.xTo = linkPositionTo.x;
-            this.link.yTo = linkPositionTo.y;
-        }
-        if (event.id === this.shapeToId) {
-            var linkPositions = new link_positions_1.LinkPositions(event.id, event.x, event.y, shapeTo.width, shapeTo.height);
-            if (shapeFrom.y < shapeTo.y) {
-                var linkPosition = linkPositions.bottom;
-            }
-            else {
-                var linkPosition = linkPositions.top;
-            }
-            if (shapeTo.y < shapeFrom.y) {
-                var linkPosition = linkPositions.bottom;
-            }
-            else {
-                var linkPosition = linkPositions.top;
-            }
-            this.link.xTo = linkPosition.x;
-            this.link.yTo = linkPosition.y;
-        }
+        //this.shapeMove.emit(event.id);
+        this.treeLinks.forEach(function (item) {
+            item.onShapeMove(event.id);
+        });
+        //this.setLink(this.shapeFromId, this.shapeToId);
     };
     TreeCanvas.prototype.setLink = function (shapeIdFrom, shapeIdTo) {
         var shapeFrom = this.getShape(shapeIdFrom);
         var shapeTo = this.getShape(shapeIdTo);
-        var shapeFromLinkPositions = new link_positions_1.LinkPositions(shapeFrom.id, shapeFrom.x, shapeFrom.y, shapeFrom.width, shapeFrom.height);
-        var shapeToLinkPositions = new link_positions_1.LinkPositions(shapeTo.id, shapeTo.x, shapeTo.y, shapeTo.width, shapeTo.height);
-        this.calcLinkCoordinates(shapeFromLinkPositions, shapeToLinkPositions);
+        var linkPositionsFromTo = this.getLinkPositionsFromTo(shapeFrom, shapeTo);
+        this.link = new link_1.Link();
+        this.link.xFrom = linkPositionsFromTo.positionFrom.x;
+        this.link.yFrom = linkPositionsFromTo.positionFrom.y;
+        this.link.xTo = linkPositionsFromTo.positionTo.x;
+        this.link.yTo = linkPositionsFromTo.positionTo.y;
+        console.log(shapeTo.x, shapeTo.y, this.link.xTo, this.link.yTo);
     };
-    TreeCanvas.prototype.calcLinkCoordinates = function (shapeFromLinkPositions, shapeToLinkPositions) {
-        this.link = new Link();
-        this.link.xFrom = shapeFromLinkPositions.bottom.x;
-        this.link.yFrom = shapeFromLinkPositions.bottom.y;
-        this.link.xTo = shapeToLinkPositions.top.x;
-        this.link.yTo = shapeToLinkPositions.top.y;
+    TreeCanvas.prototype.getLinkPositionsFromTo = function (shapeFrom, shapeTo) {
+        var LIMIT_SHAPES_DISTANCE = 60;
+        var result = new PositionsFromTo;
+        var linkPositionsFrom = new link_positions_1.LinkPositions(shapeFrom.id, shapeFrom.x, shapeFrom.y, shapeFrom.width, shapeFrom.height);
+        var linkPositionsTo = new link_positions_1.LinkPositions(shapeTo.id, shapeTo.x, shapeTo.y, shapeTo.width, shapeTo.height);
+        if (Math.abs(shapeTo.y - shapeFrom.y) < LIMIT_SHAPES_DISTANCE) {
+            if (shapeFrom.x < shapeTo.x) {
+                result.positionFrom = linkPositionsFrom.right;
+                result.positionTo = linkPositionsTo.left;
+            }
+            else {
+                result.positionFrom = linkPositionsFrom.left;
+                result.positionTo = linkPositionsTo.right;
+            }
+        }
+        else {
+            if (shapeFrom.y < shapeTo.y) {
+                result.positionFrom = linkPositionsFrom.bottom;
+                result.positionTo = linkPositionsTo.top;
+            }
+            else {
+                result.positionFrom = linkPositionsFrom.top;
+                result.positionTo = linkPositionsTo.bottom;
+            }
+        }
+        return result;
     };
+    ;
     return TreeCanvas;
 }());
+__decorate([
+    core_1.ViewChildren(tree_link_component_1.TreeLink),
+    __metadata("design:type", core_1.QueryList)
+], TreeCanvas.prototype, "treeLinks", void 0);
 TreeCanvas = __decorate([
     core_1.Component({
         moduleId: module.id,
         selector: 'tree-canvas',
         templateUrl: 'tree-canvas.component.html',
         styleUrls: ['tree-canvas.component.css'],
+        outputs: ['shapeMove']
     }),
     __metadata("design:paramtypes", [])
 ], TreeCanvas);

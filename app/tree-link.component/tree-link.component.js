@@ -14,6 +14,12 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var tree_canvas_component_1 = require("../tree-canvas.component/tree-canvas.component");
+var link_positions_1 = require("../shared/link-positions");
+var PositionsFromTo = (function () {
+    function PositionsFromTo() {
+    }
+    return PositionsFromTo;
+}());
 var TreeLink = (function () {
     function TreeLink(parent) {
         this.parent = parent;
@@ -25,6 +31,7 @@ var TreeLink = (function () {
     TreeLink.prototype.ngOnInit = function () {
         this.canvas = this.parent.canvas;
         this.line = this.drawArrow(this.xFrom, this.yFrom, this.xTo, this.yTo);
+        this.update();
         this.initCompleted = true;
     };
     TreeLink.prototype.ngOnChanges = function (changes) {
@@ -46,9 +53,50 @@ var TreeLink = (function () {
     };
     TreeLink.prototype.ngOnDestroy = function () {
     };
+    TreeLink.prototype.onShapeMove = function (shapeId) {
+        console.log('shape move:', shapeId);
+        this.update();
+    };
+    TreeLink.prototype.update = function () {
+        var linkPositionsFromTo = this.getLinkPositionsFromTo(this.shapeFrom, this.shapeTo);
+        this.line.attr({
+            x1: linkPositionsFromTo.positionFrom.x,
+            y1: linkPositionsFromTo.positionFrom.y,
+            x2: linkPositionsFromTo.positionTo.x,
+            y2: linkPositionsFromTo.positionTo.y
+        });
+    };
+    TreeLink.prototype.getLinkPositionsFromTo = function (shapeFrom, shapeTo) {
+        var LIMIT_SHAPES_DISTANCE = 120;
+        var result = new PositionsFromTo;
+        var linkPositionsFrom = new link_positions_1.LinkPositions(shapeFrom.id, shapeFrom.x, shapeFrom.y, shapeFrom.width, shapeFrom.height);
+        var linkPositionsTo = new link_positions_1.LinkPositions(shapeTo.id, shapeTo.x, shapeTo.y, shapeTo.width, shapeTo.height);
+        if (Math.abs(shapeTo.y - shapeFrom.y) < LIMIT_SHAPES_DISTANCE && Math.abs(shapeTo.x - shapeFrom.x) > LIMIT_SHAPES_DISTANCE) {
+            if (shapeFrom.x < shapeTo.x) {
+                result.positionFrom = linkPositionsFrom.right;
+                result.positionTo = linkPositionsTo.left;
+            }
+            else {
+                result.positionFrom = linkPositionsFrom.left;
+                result.positionTo = linkPositionsTo.right;
+            }
+        }
+        else {
+            if (shapeFrom.y < shapeTo.y) {
+                result.positionFrom = linkPositionsFrom.bottom;
+                result.positionTo = linkPositionsTo.top;
+            }
+            else {
+                result.positionFrom = linkPositionsFrom.top;
+                result.positionTo = linkPositionsTo.bottom;
+            }
+        }
+        return result;
+    };
+    ;
     TreeLink.prototype.drawArrow = function (xFrom, yFrom, xTo, yTo) {
-        var arrow = this.canvas.polygon([0, 10, 4, 10, 2, 0, 0, 10]).attr({ fill: 'blue' }).transform('r90');
-        var marker = arrow.marker(0, 0, 10, 10, 0, 5);
+        var arrow = this.canvas.polygon([0, 10, 8, 10, 4, 0, 0, 10]).attr({ fill: 'blue' }).transform('r90');
+        var marker = arrow.marker(0, 0, 10, 10, 8, 5);
         var line = this.canvas.line(xFrom, yFrom, xTo, yTo).attr({
             id: 'myid',
             stroke: "blue",
@@ -65,7 +113,7 @@ TreeLink = __decorate([
         selector: 'tree-link',
         templateUrl: 'tree-link.component.html',
         styleUrls: ['tree-link.component.css'],
-        inputs: ['id', 'xFrom', 'yFrom', 'xTo', 'yTo'],
+        inputs: ['id', 'xFrom', 'yFrom', 'xTo', 'yTo', 'shapeFrom', 'shapeTo'],
         outputs: ['select']
     }),
     __param(0, core_1.Inject(core_1.forwardRef(function () { return tree_canvas_component_1.TreeCanvas; }))),
