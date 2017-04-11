@@ -23,15 +23,25 @@ var PositionsFromTo = (function () {
 var TreeLink = (function () {
     function TreeLink(parent) {
         this.parent = parent;
-        this.fill = '#CFFFCD';
-        this.stroke = 'red';
+        this.fill = 'blue';
+        this.fillSelected = 'red';
         this.initCompleted = false;
         this.select = new core_1.EventEmitter();
     }
     TreeLink.prototype.ngOnInit = function () {
         this.canvas = this.parent.canvas;
-        this.line = this.drawArrow(this.xFrom, this.yFrom, this.xTo, this.yTo);
+        this.drawArrow(this.xFrom, this.yFrom, this.xTo, this.yTo, this.selected);
         this.update();
+        var that = this;
+        this.line.dblclick(function (event) {
+            that.selected = true;
+            that.select.emit(that.id);
+        });
+        this.arrow.dblclick(function (event) {
+            that.selected = true;
+            console.log('dbl click arrow');
+            that.select.emit(that.id);
+        });
         this.initCompleted = true;
     };
     TreeLink.prototype.ngOnChanges = function (changes) {
@@ -50,8 +60,15 @@ var TreeLink = (function () {
         if (changes['yTo']) {
             this.line.attr({ y2: changes['yTo'].currentValue });
         }
+        if (changes['selected']) {
+            this.line.attr({ stroke: changes['selected'].currentValue ? this.fillSelected : this.fill, fill: changes['selected'] ? this.fillSelected : this.fill });
+            this.arrow.attr({
+                fill: changes['selected'].currentValue ? this.fillSelected : this.fill,
+            });
+        }
     };
     TreeLink.prototype.ngOnDestroy = function () {
+        this.line.remove();
     };
     TreeLink.prototype.onShapeMove = function (shapeId) {
         console.log('shape move:', shapeId);
@@ -94,16 +111,16 @@ var TreeLink = (function () {
         return result;
     };
     ;
-    TreeLink.prototype.drawArrow = function (xFrom, yFrom, xTo, yTo) {
-        var arrow = this.canvas.polygon([0, 10, 8, 10, 4, 0, 0, 10]).attr({ fill: 'blue' }).transform('r90');
-        var marker = arrow.marker(0, 0, 10, 10, 8, 5);
-        var line = this.canvas.line(xFrom, yFrom, xTo, yTo).attr({
+    TreeLink.prototype.drawArrow = function (xFrom, yFrom, xTo, yTo, selected) {
+        var color = selected ? this.fillSelected : this.fill;
+        this.arrow = this.canvas.polygon([0, 10, 8, 10, 4, 0, 0, 10]).attr({ fill: color }).transform('r90');
+        var marker = this.arrow.marker(0, 0, 10, 10, 8, 5);
+        this.line = this.canvas.line(xFrom, yFrom, xTo, yTo).attr({
             id: 'myid',
-            stroke: "blue",
-            strokeWidth: 1,
+            stroke: color,
+            strokeWidth: 2,
             markerEnd: marker
         });
-        return line;
     };
     return TreeLink;
 }());
@@ -113,7 +130,7 @@ TreeLink = __decorate([
         selector: 'tree-link',
         templateUrl: 'tree-link.component.html',
         styleUrls: ['tree-link.component.css'],
-        inputs: ['id', 'xFrom', 'yFrom', 'xTo', 'yTo', 'shapeFrom', 'shapeTo'],
+        inputs: ['id', 'xFrom', 'yFrom', 'xTo', 'yTo', 'shapeFrom', 'shapeTo', 'selected'],
         outputs: ['select']
     }),
     __param(0, core_1.Inject(core_1.forwardRef(function () { return tree_canvas_component_1.TreeCanvas; }))),

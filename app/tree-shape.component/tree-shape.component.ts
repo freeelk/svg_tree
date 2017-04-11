@@ -16,16 +16,16 @@ export class TreeShape implements OnInit, OnChanges, OnDestroy {
     id: string;
     x: number;
     y: number;
-    xInit: number;
-    yInit: number;
-    width: number = 120;
-    height: number = 60;
-    rx: number = 0;
-    ry: number = 0;
-    fill: string = '#CFFFCD';
-    stroke: string = 'red';
+    width: number;
+    height: number;
     selected: boolean;
     shape: any;
+
+    rx: number = 5;
+    ry: number = 5;
+    fill: string = '#CFFFCD';
+    stroke: string = 'red';
+
     initCompleted: boolean = false;
 
     select: EventEmitter<string> = new EventEmitter<string>();
@@ -35,12 +35,14 @@ export class TreeShape implements OnInit, OnChanges, OnDestroy {
 
     ngOnInit() {
         this.canvas = this.parent.canvas;
-        this.xInit = this.x;
-        this.yInit = this.y;
-        this.shape = this.canvas.rect(this.x, this.y, this.width, this.height, this.rx, this.ry).attr({ fill: this.fill, stroke: this.stroke });
-
+        let box = this.canvas.rect(this.x, this.y, this.width, this.height, this.rx, this.ry).attr({ fill: this.fill, stroke: this.stroke });
+        let text =  this.canvas.text(this.x + 5, this.y + 25, this.id);
+        text.attr({
+          'font-size':15
+        });
+        
+        this.shape = this.canvas.g(box, text);
         this.shape.attr({ id: this.id });
-        this.shape.addClass('draggable');
 
         if (this.selected) {
             this.shape.attr({ strokeWidth: 1 });
@@ -67,11 +69,11 @@ export class TreeShape implements OnInit, OnChanges, OnDestroy {
                 that.move.emit({id: that.id, x: bBox.x, y: bBox.y});
             },
             function () {
+                //Move start
                 this.data('origTransform', this.transform().local );
-                console.log("Move started");
             },
             function () {
-                console.log("Move stopped");
+               //Move end
             }
         );
 

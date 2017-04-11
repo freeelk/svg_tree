@@ -12,6 +12,7 @@ var app_component_1 = require("./app.component");
 var tree_canvas_component_1 = require("./tree-canvas.component/tree-canvas.component");
 var tree_shape_component_1 = require("./tree-shape.component/tree-shape.component");
 var tree_link_component_1 = require("./tree-link.component/tree-link.component");
+var tree_service_1 = require("./services/tree.service");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -21,7 +22,8 @@ AppModule = __decorate([
     core_1.NgModule({
         imports: [platform_browser_1.BrowserModule],
         declarations: [app_component_1.AppComponent, tree_canvas_component_1.TreeCanvas, tree_shape_component_1.TreeShape, tree_link_component_1.TreeLink],
-        bootstrap: [app_component_1.AppComponent]
+        bootstrap: [app_component_1.AppComponent],
+        providers: [tree_service_1.TreeService],
     })
 ], AppModule);
 exports.AppModule = AppModule;

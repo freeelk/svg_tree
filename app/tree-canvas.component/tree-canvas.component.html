@@ -1,10 +1,10 @@
 <div class="buttons-wrapper">
     <button (click)="addShape()">Добавить объект</button>
-    <button (click)="removeShape()">Удалить активный объект</button>
+    <button (click)="removeShape()">Удалить выделенный объект</button>
+    <button (click)="addLink()">Добавить связь</button>
+    <button (click)="removeLink()">Удалить связь</button>
 </div>
 <svg id="tree-canvas" class="tree-canvas">
-     
-
     <tree-shape *ngFor="let shape of shapes" 
         [id]="shape.id" 
         [x]="shape.x" 
@@ -13,12 +13,13 @@
         [height]="shape.height" 
         [selected]="shape.selected"
         (select) = "shapeSelectHandler($event)"
-        (move) = "shapeMoveHandler($event)"
-    ></tree-shape>
-
+        (move) = "shapeMoveHandler($event)">
+    </tree-shape>
     <tree-link *ngFor="let link of links" 
+        [id]="link.id"
         [shapeFrom]="getShape(link.shapeFromId)"
         [shapeTo]="getShape(link.shapeToId)"
-    ></tree-link>
-   
+        (select) = "linkSelectHandler($event)"
+        [selected]="link.selected">
+    </tree-link>
 </svg>

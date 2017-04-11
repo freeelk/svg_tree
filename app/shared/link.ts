@@ -1,11 +1,8 @@
 import { Shape } from '../shared/shape';
 
 export class Link {
-    /*xFrom: number;
-    yFrom: number;
-    xTo: number;
-    yTo: number;*/
+    id: string;
     shapeFromId: string;
     shapeToId: string;
-
+    selected: boolean;
 }

@@ -18,10 +18,8 @@ var link_positions_1 = require("../shared/link-positions");
 var TreeShape = (function () {
     function TreeShape(parent) {
         this.parent = parent;
-        this.width = 120;
-        this.height = 60;
-        this.rx = 0;
-        this.ry = 0;
+        this.rx = 5;
+        this.ry = 5;
         this.fill = '#CFFFCD';
         this.stroke = 'red';
         this.initCompleted = false;
@@ -30,11 +28,13 @@ var TreeShape = (function () {
     }
     TreeShape.prototype.ngOnInit = function () {
         this.canvas = this.parent.canvas;
-        this.xInit = this.x;
-        this.yInit = this.y;
-        this.shape = this.canvas.rect(this.x, this.y, this.width, this.height, this.rx, this.ry).attr({ fill: this.fill, stroke: this.stroke });
+        var box = this.canvas.rect(this.x, this.y, this.width, this.height, this.rx, this.ry).attr({ fill: this.fill, stroke: this.stroke });
+        var text = this.canvas.text(this.x + 5, this.y + 25, this.id);
+        text.attr({
+            'font-size': 15
+        });
+        this.shape = this.canvas.g(box, text);
         this.shape.attr({ id: this.id });
-        this.shape.addClass('draggable');
         if (this.selected) {
             this.shape.attr({ strokeWidth: 1 });
         }
@@ -55,10 +55,10 @@ var TreeShape = (function () {
             that.y = bBox.y;
             that.move.emit({ id: that.id, x: bBox.x, y: bBox.y });
         }, function () {
+            //Move start
             this.data('origTransform', this.transform().local);
-            console.log("Move started");
         }, function () {
-            console.log("Move stopped");
+            //Move end
         });
         this.initCompleted = true;
     };
