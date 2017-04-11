@@ -38,9 +38,12 @@ var TreeCanvas = (function () {
     TreeCanvas.prototype.getShape = function (id) {
         return this.treeService.getShape(id);
     };
-    TreeCanvas.prototype.addLink = function () {
-        var link = { id: 'link-4', shapeFromId: 'shape-5', shapeToId: 'shape-0', selected: false };
+    TreeCanvas.prototype.addLink = function (shapeFromId, shapeToId) {
+        console.log(shapeFromId, shapeToId);
+        var id = 'link-' + (this.links.length + 1);
+        var link = { id: id, shapeFromId: shapeFromId, shapeToId: shapeToId, selected: false };
         this.treeService.addLink(link);
+        this.links = this.treeService.getLinks();
     };
     TreeCanvas.prototype.removeLink = function () {
         var _this = this;

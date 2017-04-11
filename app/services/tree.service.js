@@ -36,10 +36,20 @@ var TreeService = (function () {
         shapes.push(shape);
     };
     TreeService.prototype.deleteShape = function (shape) {
+        var _this = this;
         shapes.forEach(function (sh, index) {
             if (sh.id === shape.id) {
                 shapes.splice(index, 1);
             }
+        });
+        var linksForDelete = [];
+        links.forEach(function (link, index) {
+            if (link.shapeFromId === shape.id || link.shapeToId === shape.id) {
+                linksForDelete.push(link);
+            }
+        });
+        linksForDelete.forEach(function (link) {
+            _this.deleteLink(link);
         });
     };
     TreeService.prototype.updateshape = function () {
@@ -51,6 +61,7 @@ var TreeService = (function () {
         return links.find(function (link) { return link.id === id; });
     };
     TreeService.prototype.addLink = function (link) {
+        //todo: проверка, нет ли такой связи уже и есть ли такие shapes
         links.push(link);
     };
     TreeService.prototype.deleteLink = function (link) {

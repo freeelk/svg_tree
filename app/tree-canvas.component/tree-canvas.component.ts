@@ -51,9 +51,12 @@ export class TreeCanvas implements OnInit {
         return this.treeService.getShape(id);
     }
 
-    addLink() {
-        let link = { id: 'link-4', shapeFromId: 'shape-5', shapeToId: 'shape-0', selected: false     };
+    addLink(shapeFromId, shapeToId) {
+        console.log(shapeFromId, shapeToId);
+        let id = 'link-' + (this.links.length + 1);
+        let link = { id: id, shapeFromId: shapeFromId, shapeToId: shapeToId, selected: false };
         this.treeService.addLink(link);
+         this.links = this.treeService.getLinks();
     }
 
     removeLink() {

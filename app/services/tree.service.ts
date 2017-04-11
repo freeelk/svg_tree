@@ -41,6 +41,17 @@ export class TreeService {
                 shapes.splice(index, 1);
             }
         });
+
+        let linksForDelete = [];
+        links.forEach((link, index) => {
+            if (link.shapeFromId === shape.id || link.shapeToId === shape.id) {
+                linksForDelete.push(link);
+            }
+        });
+
+        linksForDelete.forEach(link =>{
+            this.deleteLink(link);
+        });
     }
 
     updateshape() {
@@ -56,6 +67,7 @@ export class TreeService {
     }
 
     addLink(link: Link) {
+        //todo: проверка, нет ли такой связи уже и есть ли такие shapes
         links.push(link);
     }
 

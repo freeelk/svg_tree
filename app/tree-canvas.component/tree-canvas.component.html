@@ -1,8 +1,10 @@
 <div class="buttons-wrapper">
     <button (click)="addShape()">Добавить объект</button>
     <button (click)="removeShape()">Удалить выделенный объект</button>
-    <button (click)="addLink()">Добавить связь</button>
-    <button (click)="removeLink()">Удалить связь</button>
+    <input #linkIdFrom type="text" placeholder="id From">
+    <input #linkIdTo type="text" placeholder="id To">
+    <button (click)="addLink(linkIdFrom.value, linkIdTo.value)">Добавить связь</button>
+    <button (click)="removeLink()">Удалить выделенную связь</button>
 </div>
 <svg id="tree-canvas" class="tree-canvas">
     <tree-shape *ngFor="let shape of shapes" 
