@@ -23,7 +23,7 @@ var PositionsFromTo = (function () {
 var TreeLink = (function () {
     function TreeLink(parent) {
         this.parent = parent;
-        this.fill = 'blue';
+        this.fill = '#02bbff';
         this.fillSelected = 'red';
         this.initCompleted = false;
         this.select = new core_1.EventEmitter();

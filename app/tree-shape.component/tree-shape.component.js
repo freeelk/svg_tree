@@ -15,11 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var tree_canvas_component_1 = require("../tree-canvas.component/tree-canvas.component");
 var link_positions_1 = require("../shared/link-positions");
+var snap = require("snapsvg");
 var TreeShape = (function () {
     function TreeShape(parent) {
         this.parent = parent;
         this.rx = 5;
         this.ry = 5;
+        this.fillColors = { reward: '#dedede', operator: '#9FD19B', filter: '#94CAFF', applicator: '#F66622' };
         this.fill = '#CFFFCD';
         this.stroke = 'red';
         this.initCompleted = false;
@@ -28,12 +30,10 @@ var TreeShape = (function () {
     }
     TreeShape.prototype.ngOnInit = function () {
         this.canvas = this.parent.canvas;
-        var box = this.canvas.rect(this.x, this.y, this.width, this.height, this.rx, this.ry).attr({ fill: this.fill, stroke: this.stroke });
-        var text = this.canvas.text(this.x + 5, this.y + 25, this.id);
-        text.attr({
-            'font-size': 15
-        });
-        this.shape = this.canvas.g(box, text);
+        var box = this.canvas.rect(this.x, this.y, this.width, this.height, this.rx, this.ry).attr({ fill: this.fillColors[this.type], stroke: this.stroke });
+        var textId = this.canvas.text(this.x + 5, this.y + 35, this.id).attr({ 'font-size': 15 });
+        var textType = this.canvas.text(this.x + 5, this.y + 15, this.type).attr({ 'font-size': 12 });
+        this.shape = this.canvas.g(box, textId, textType);
         this.shape.attr({ id: this.id });
         if (this.selected) {
             this.shape.attr({ strokeWidth: 1 });
@@ -42,9 +42,15 @@ var TreeShape = (function () {
             this.shape.attr({ strokeWidth: 0 });
         }
         var that = this;
-        this.shape.dblclick(function (event) {
+        this.shape.click(function (event) {
             that.selected = true;
             that.select.emit(that.id);
+        });
+        this.shape.dblclick(function (event) {
+            that.shape.attr({ 'stroke-dasharray': '5' });
+            snap.animate(0, 60, function (value) {
+                that.shape.attr({ 'stroke-dashoffset': value * 10 });
+            }, 20000);
         });
         this.shape.drag(function (dx, dy) {
             this.attr({
@@ -92,7 +98,7 @@ TreeShape = __decorate([
         selector: 'tree-shape',
         templateUrl: 'tree-shape.component.html',
         styleUrls: ['tree-shape.component.css'],
-        inputs: ['id', 'x', 'y', 'width', 'height', 'fill', 'selected'],
+        inputs: ['id', 'type', 'x', 'y', 'width', 'height', 'fill', 'selected'],
         outputs: ['select', 'move']
     }),
     __param(0, core_1.Inject(core_1.forwardRef(function () { return tree_canvas_component_1.TreeCanvas; }))),

@@ -33,9 +33,9 @@ export class TreeCanvas implements OnInit {
          this.canvas = snap('#tree-canvas');
     }
 
-    addShape() {
+    addShape(shapeType: string) {
         let id = 'shape-' + (this.shapes.length + 1);
-        let shape = { id: id, x: 450, y: 10, xInit: 450, yInit: 10, width: 100, height: 40, selected: false };
+        let shape = { id: id, type: shapeType, x: 450, y: 10, xInit: 450, yInit: 10, width: 100, height: 40, selected: false };
         this.treeService.addShape(shape);
     }
 
@@ -97,6 +97,11 @@ export class TreeCanvas implements OnInit {
         this.treeLinks.forEach(item=> {
             item.onShapeMove(event.id);
         });
+    }
+
+    shapeCreateHandler(event: Shape) {
+         event.id  = 'shape-' + (this.shapes.length + 1);
+        this.treeService.addShape(event);
     }
 
 }

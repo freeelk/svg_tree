@@ -22,9 +22,9 @@ var TreeCanvas = (function () {
     TreeCanvas.prototype.ngOnInit = function () {
         this.canvas = snap('#tree-canvas');
     };
-    TreeCanvas.prototype.addShape = function () {
+    TreeCanvas.prototype.addShape = function (shapeType) {
         var id = 'shape-' + (this.shapes.length + 1);
-        var shape = { id: id, x: 450, y: 10, xInit: 450, yInit: 10, width: 100, height: 40, selected: false };
+        var shape = { id: id, type: shapeType, x: 450, y: 10, xInit: 450, yInit: 10, width: 100, height: 40, selected: false };
         this.treeService.addShape(shape);
     };
     TreeCanvas.prototype.removeShape = function (id) {
@@ -81,6 +81,10 @@ var TreeCanvas = (function () {
         this.treeLinks.forEach(function (item) {
             item.onShapeMove(event.id);
         });
+    };
+    TreeCanvas.prototype.shapeCreateHandler = function (event) {
+        event.id = 'shape-' + (this.shapes.length + 1);
+        this.treeService.addShape(event);
     };
     return TreeCanvas;
 }());

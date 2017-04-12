@@ -1,7 +1,40 @@
-.tree-canvas {
-    width: 1000px;
-    height: 500px;
+div {
+    box-sizing: border-box;
+}
+
+.tree-canvas__right,
+.tree-canvas__left-top,
+.tree-canvas__left-bottom {
     border: solid 1px red;
+}
+
+.tree-canvas__left-top,
+.tree-canvas__left-bottom {
+    padding: 5px;
+}
+
+.tree-canvas__wrapper {
+    display: flex;
+    justify-content: flex-space-between;
+    height: 500px;
+}
+
+.tree-canvas__left {
+    width: 200px;
+}
+
+.tree-canvas__left-top,
+.tree-canvas__left-bottom {
+    height: 50%;
+}
+
+.tree-canvas__right {
+    width: 100%;
+}
+
+.tree-canvas {
+    width: 100%;
+    height: 100%;
 }
 
 .buttons-wrapper {

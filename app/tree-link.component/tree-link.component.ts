@@ -31,7 +31,7 @@ export class TreeLink implements OnInit, OnChanges, OnDestroy {
     yTo: number;
     selected: boolean;
     
-    fill: string = 'blue';
+    fill: string = '#02bbff';
     fillSelected: string = 'red';
     
 
@@ -56,7 +56,7 @@ export class TreeLink implements OnInit, OnChanges, OnDestroy {
             that.selected = true;
             that.select.emit(that.id);
         });
-        
+
         this.arrow.dblclick(function (event) {
             that.selected = true;
             console.log('dbl click arrow');

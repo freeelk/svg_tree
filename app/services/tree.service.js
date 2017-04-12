@@ -10,18 +10,19 @@ var core_1 = require("@angular/core");
 require("rxjs/add/operator/map");
 require("rxjs/add/operator/catch");
 var shapes = [
-    { id: 'shape-0', x: 300, y: 30, width: 100, height: 40, selected: true },
-    { id: 'shape-1', x: 500, y: 90, width: 100, height: 40, selected: false },
-    { id: 'shape-2', x: 600, y: 200, width: 100, height: 40, selected: false },
-    { id: 'shape-3', x: 340, y: 230, width: 100, height: 40, selected: false },
-    { id: 'shape-4', x: 200, y: 230, width: 100, height: 40, selected: false },
-    { id: 'shape-5', x: 10, y: 10, width: 100, height: 40, selected: false }
+    { id: 'shape-0', type: "reward", x: 200, y: 30, width: 100, height: 40, selected: false },
+    { id: 'shape-1', type: "operator", x: 300, y: 220, width: 100, height: 40, selected: false },
+    { id: 'shape-2', type: "reward", x: 800, y: 30, width: 100, height: 40, selected: false },
+    { id: 'shape-3', type: "reward", x: 540, y: 30, width: 100, height: 40, selected: false },
+    { id: 'shape-4', type: "reward", x: 400, y: 30, width: 100, height: 40, selected: false },
+    { id: 'shape-5', type: "applicator", x: 400, y: 400, width: 100, height: 40, selected: false }
 ];
 var links = [
-    { id: 'link-0', shapeFromId: 'shape-0', shapeToId: 'shape-1', selected: true },
-    { id: 'link-1', shapeFromId: 'shape-1', shapeToId: 'shape-2', selected: false },
-    { id: 'link-2', shapeFromId: 'shape-1', shapeToId: 'shape-3', selected: false },
-    { id: 'link-3', shapeFromId: 'shape-0', shapeToId: 'shape-4', selected: false }
+    { id: 'link-0', shapeFromId: 'shape-0', shapeToId: 'shape-1', selected: false },
+    { id: 'link-1', shapeFromId: 'shape-1', shapeToId: 'shape-5', selected: false },
+    { id: 'link-2', shapeFromId: 'shape-3', shapeToId: 'shape-1', selected: false },
+    { id: 'link-3', shapeFromId: 'shape-4', shapeToId: 'shape-1', selected: false },
+    { id: 'link-4', shapeFromId: 'shape-2', shapeToId: 'shape-5', selected: false }
 ];
 var TreeService = (function () {
     function TreeService() {
