@@ -4,23 +4,24 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Shape } from '../shared/shape';
 import { Link } from '../shared/link';
-import { ShapeSelection } from '../shared/shape-selection.enum'
+import { ShapeSelection } from '../shared/shape-selection.enum';
+import { UUID } from 'angular2-uuid';
 
 let shapes = [
-    { id: 'shape-0', type: "reward", x: 200, y: 30, width: 100, height: 40, selected: ShapeSelection.None },
-    { id: 'shape-1', type: "operator", x: 300, y: 220, width: 100, height: 40, selected: ShapeSelection.None },
-    { id: 'shape-2', type: "reward", x: 800, y: 30, width: 100, height: 40, selected: ShapeSelection.None },
-    { id: 'shape-3', type: "reward", x: 540, y: 30, width: 100, height: 40, selected: ShapeSelection.None },
-    { id: 'shape-4', type: "reward", x: 400, y: 30, width: 100, height: 40, selected: ShapeSelection.None },
-    { id: 'shape-5', type: "applicator", x: 400, y: 400, width: 100, height: 40, selected: ShapeSelection.None }
+    { id: UUID.UUID(), type: "reward", x: 200, y: 30, width: 100, height: 40, selected: ShapeSelection.None },
+    { id: UUID.UUID(), type: "operator", x: 300, y: 220, width: 100, height: 40, selected: ShapeSelection.None },
+    { id: UUID.UUID(), type: "reward", x: 800, y: 30, width: 100, height: 40, selected: ShapeSelection.None },
+    { id: UUID.UUID(), type: "reward", x: 540, y: 30, width: 100, height: 40, selected: ShapeSelection.None },
+    { id: UUID.UUID(), type: "reward", x: 400, y: 30, width: 100, height: 40, selected: ShapeSelection.None },
+    { id: UUID.UUID(), type: "applicator", x: 400, y: 400, width: 100, height: 40, selected: ShapeSelection.None }
 ];
 
 let links = [
-    { id: 'link-0', shapeFromId: 'shape-0', shapeToId: 'shape-1', selected: false },
-    { id: 'link-1', shapeFromId: 'shape-1', shapeToId: 'shape-5', selected: false },
-    { id: 'link-2', shapeFromId: 'shape-3', shapeToId: 'shape-1', selected: false },
-    { id: 'link-3', shapeFromId: 'shape-4', shapeToId: 'shape-1', selected: false },
-    { id: 'link-4', shapeFromId: 'shape-2', shapeToId: 'shape-5', selected: false }
+    { id: 'link-0', shapeFromId: shapes[0].id, shapeToId: shapes[1].id, selected: false },
+    { id: 'link-1', shapeFromId: shapes[1].id, shapeToId: shapes[5].id, selected: false },
+    { id: 'link-2', shapeFromId: shapes[3].id, shapeToId: shapes[1].id, selected: false },
+    { id: 'link-3', shapeFromId: shapes[4].id, shapeToId: shapes[1].id, selected: false },
+    { id: 'link-4', shapeFromId: shapes[2].id, shapeToId: shapes[5].id, selected: false }
 ];
 
 @Injectable()

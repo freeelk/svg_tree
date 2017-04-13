@@ -10,20 +10,21 @@ var core_1 = require("@angular/core");
 require("rxjs/add/operator/map");
 require("rxjs/add/operator/catch");
 var shape_selection_enum_1 = require("../shared/shape-selection.enum");
+var angular2_uuid_1 = require("angular2-uuid");
 var shapes = [
-    { id: 'shape-0', type: "reward", x: 200, y: 30, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
-    { id: 'shape-1', type: "operator", x: 300, y: 220, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
-    { id: 'shape-2', type: "reward", x: 800, y: 30, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
-    { id: 'shape-3', type: "reward", x: 540, y: 30, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
-    { id: 'shape-4', type: "reward", x: 400, y: 30, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
-    { id: 'shape-5', type: "applicator", x: 400, y: 400, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None }
+    { id: angular2_uuid_1.UUID.UUID(), type: "reward", x: 200, y: 30, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
+    { id: angular2_uuid_1.UUID.UUID(), type: "operator", x: 300, y: 220, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
+    { id: angular2_uuid_1.UUID.UUID(), type: "reward", x: 800, y: 30, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
+    { id: angular2_uuid_1.UUID.UUID(), type: "reward", x: 540, y: 30, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
+    { id: angular2_uuid_1.UUID.UUID(), type: "reward", x: 400, y: 30, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
+    { id: angular2_uuid_1.UUID.UUID(), type: "applicator", x: 400, y: 400, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None }
 ];
 var links = [
-    { id: 'link-0', shapeFromId: 'shape-0', shapeToId: 'shape-1', selected: false },
-    { id: 'link-1', shapeFromId: 'shape-1', shapeToId: 'shape-5', selected: false },
-    { id: 'link-2', shapeFromId: 'shape-3', shapeToId: 'shape-1', selected: false },
-    { id: 'link-3', shapeFromId: 'shape-4', shapeToId: 'shape-1', selected: false },
-    { id: 'link-4', shapeFromId: 'shape-2', shapeToId: 'shape-5', selected: false }
+    { id: 'link-0', shapeFromId: shapes[0].id, shapeToId: shapes[1].id, selected: false },
+    { id: 'link-1', shapeFromId: shapes[1].id, shapeToId: shapes[5].id, selected: false },
+    { id: 'link-2', shapeFromId: shapes[3].id, shapeToId: shapes[1].id, selected: false },
+    { id: 'link-3', shapeFromId: shapes[4].id, shapeToId: shapes[1].id, selected: false },
+    { id: 'link-4', shapeFromId: shapes[2].id, shapeToId: shapes[5].id, selected: false }
 ];
 var TreeService = (function () {
     function TreeService() {

@@ -20,6 +20,7 @@
             // other libraries
             'rxjs': 'npm:rxjs',
             'angular-in-memory-web-api': 'npm:angular-in-memory-web-api',
+            'angular2-uuid': 'npm:angular2-uuid/index.js',
             'snapsvg': 'npm:snapsvg/dist/snap.svg-min.js',
             'interactjs': 'npm:interactjs/interact.js'
 

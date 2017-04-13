@@ -1,6 +1,6 @@
 import { Component, OnInit, QueryList, ViewChildren, EventEmitter } from '@angular/core';
 import { Shape } from '../shared/shape';
-import { ShapeSelection } from '../shared/shape-selection.enum'
+import { ShapeSelection } from '../shared/shape-selection.enum';
 import snap = require('snapsvg');
 
 

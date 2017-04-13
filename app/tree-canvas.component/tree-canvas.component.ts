@@ -5,6 +5,8 @@ import { Shape } from '../shared/shape';
 import { Link } from '../shared/link';
 import { ShapeSelection } from '../shared/shape-selection.enum';
 import { TreeService } from "../services/tree.service";
+import { UUID } from 'angular2-uuid';
+
 import snap = require('snapsvg');
 
 
@@ -33,12 +35,6 @@ export class TreeCanvas implements OnInit {
         this.canvas = snap('#tree-canvas');
     }
 
-    addShape(shapeType: string) {
-        let id = 'shape-' + (this.shapes.length + 1);
-        let shape = { id: id, type: shapeType, x: 450, y: 10, xInit: 450, yInit: 10, width: 100, height: 40, selected: ShapeSelection.None };
-        this.treeService.addShape(shape);
-    }
-
     removeShape(id: string) {
         this.shapes.forEach((shape, index) => {
             if (shape.selected === ShapeSelection.Selected) {
@@ -53,7 +49,7 @@ export class TreeCanvas implements OnInit {
 
     addLink(shapeFromId, shapeToId) {
         console.log(shapeFromId, shapeToId);
-        let id = 'link-' + (this.links.length + 1);
+        let id = UUID.UUID(); // 'link-' + (this.links.length + 1);
         let link = { id: id, shapeFromId: shapeFromId, shapeToId: shapeToId, selected: false };
         this.treeService.addLink(link);
         this.links = this.treeService.getLinks();
@@ -112,7 +108,7 @@ export class TreeCanvas implements OnInit {
     }
 
     shapeCreateHandler(event: Shape) {
-        event.id = 'shape-' + (this.shapes.length + 1);
+        event.id = UUID.UUID();
         this.treeService.addShape(event);
     }
 

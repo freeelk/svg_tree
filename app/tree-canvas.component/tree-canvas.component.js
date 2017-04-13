@@ -13,6 +13,7 @@ var core_1 = require("@angular/core");
 var tree_link_component_1 = require("../tree-link.component/tree-link.component");
 var shape_selection_enum_1 = require("../shared/shape-selection.enum");
 var tree_service_1 = require("../services/tree.service");
+var angular2_uuid_1 = require("angular2-uuid");
 var snap = require("snapsvg");
 var TreeCanvas = (function () {
     function TreeCanvas(treeService) {
@@ -22,11 +23,6 @@ var TreeCanvas = (function () {
     }
     TreeCanvas.prototype.ngOnInit = function () {
         this.canvas = snap('#tree-canvas');
-    };
-    TreeCanvas.prototype.addShape = function (shapeType) {
-        var id = 'shape-' + (this.shapes.length + 1);
-        var shape = { id: id, type: shapeType, x: 450, y: 10, xInit: 450, yInit: 10, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None };
-        this.treeService.addShape(shape);
     };
     TreeCanvas.prototype.removeShape = function (id) {
         var _this = this;
@@ -41,7 +37,7 @@ var TreeCanvas = (function () {
     };
     TreeCanvas.prototype.addLink = function (shapeFromId, shapeToId) {
         console.log(shapeFromId, shapeToId);
-        var id = 'link-' + (this.links.length + 1);
+        var id = angular2_uuid_1.UUID.UUID(); // 'link-' + (this.links.length + 1);
         var link = { id: id, shapeFromId: shapeFromId, shapeToId: shapeToId, selected: false };
         this.treeService.addLink(link);
         this.links = this.treeService.getLinks();
@@ -97,7 +93,7 @@ var TreeCanvas = (function () {
         });
     };
     TreeCanvas.prototype.shapeCreateHandler = function (event) {
-        event.id = 'shape-' + (this.shapes.length + 1);
+        event.id = angular2_uuid_1.UUID.UUID();
         this.treeService.addShape(event);
     };
     TreeCanvas.prototype.shapeDeleteHandler = function () {
