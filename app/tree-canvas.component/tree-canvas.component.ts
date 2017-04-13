@@ -4,6 +4,7 @@ import { TreeLink } from '../tree-link.component/tree-link.component';
 import { Shape } from '../shared/shape';
 import { Link } from '../shared/link';
 import { ShapeSelection } from '../shared/shape-selection.enum';
+import { TreeNodeData } from '../shared/tree-node-data';
 import { TreeService } from "../services/tree.service";
 import { UUID } from 'angular2-uuid';
 
@@ -22,6 +23,8 @@ export class TreeCanvas implements OnInit {
     canvas: any;
     shapes: Array<Shape>;
     links: Array<Link>;
+    selectedNodeId: string;
+    selectedNodeData: TreeNodeData;
 
     @ViewChildren(TreeLink)
     private treeLinks: QueryList<TreeLink>;
@@ -33,6 +36,7 @@ export class TreeCanvas implements OnInit {
 
     ngOnInit() {
         this.canvas = snap('#tree-canvas');
+        this.selectedNodeData = {name: ''};
     }
 
     removeShape(id: string) {
@@ -49,7 +53,7 @@ export class TreeCanvas implements OnInit {
 
     addLink(shapeFromId, shapeToId) {
         console.log(shapeFromId, shapeToId);
-        let id = UUID.UUID(); // 'link-' + (this.links.length + 1);
+        let id = UUID.UUID(); 
         let link = { id: id, shapeFromId: shapeFromId, shapeToId: shapeToId, selected: false };
         this.treeService.addLink(link);
         this.links = this.treeService.getLinks();
@@ -64,9 +68,12 @@ export class TreeCanvas implements OnInit {
     }
 
     shapeSelectHandler(event) {
+        let clickedShape = this.shapes.find(shape => shape.id === event.id);
+        this.selectedNodeData = clickedShape.data;
+        this.selectedNodeId = clickedShape.id;
+
         let activatedShape = this.shapes.find(shape => shape.selected === ShapeSelection.Activated);
         if (activatedShape) {
-            let clickedShape = this.shapes.find(shape => shape.id === event.id);
             if (clickedShape !== activatedShape) {
                 let link = this.treeService.getLinkBetweenShapes(activatedShape, clickedShape);
                 if (link) {
@@ -118,6 +125,13 @@ export class TreeCanvas implements OnInit {
                 this.treeService.deleteShape(shape);
             }
         });
+    }
+
+    selectedNodeDataChangeHandler(data: TreeNodeData) {
+        let selectedShape =  this.getShape(this.selectedNodeId);
+        if ( selectedShape ) {
+            selectedShape.data = data;
+        }
     }
 
 }

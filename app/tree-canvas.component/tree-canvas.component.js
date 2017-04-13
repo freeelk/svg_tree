@@ -23,6 +23,7 @@ var TreeCanvas = (function () {
     }
     TreeCanvas.prototype.ngOnInit = function () {
         this.canvas = snap('#tree-canvas');
+        this.selectedNodeData = { name: '' };
     };
     TreeCanvas.prototype.removeShape = function (id) {
         var _this = this;
@@ -37,7 +38,7 @@ var TreeCanvas = (function () {
     };
     TreeCanvas.prototype.addLink = function (shapeFromId, shapeToId) {
         console.log(shapeFromId, shapeToId);
-        var id = angular2_uuid_1.UUID.UUID(); // 'link-' + (this.links.length + 1);
+        var id = angular2_uuid_1.UUID.UUID();
         var link = { id: id, shapeFromId: shapeFromId, shapeToId: shapeToId, selected: false };
         this.treeService.addLink(link);
         this.links = this.treeService.getLinks();
@@ -51,9 +52,11 @@ var TreeCanvas = (function () {
         });
     };
     TreeCanvas.prototype.shapeSelectHandler = function (event) {
+        var clickedShape = this.shapes.find(function (shape) { return shape.id === event.id; });
+        this.selectedNodeData = clickedShape.data;
+        this.selectedNodeId = clickedShape.id;
         var activatedShape = this.shapes.find(function (shape) { return shape.selected === shape_selection_enum_1.ShapeSelection.Activated; });
         if (activatedShape) {
-            var clickedShape = this.shapes.find(function (shape) { return shape.id === event.id; });
             if (clickedShape !== activatedShape) {
                 var link = this.treeService.getLinkBetweenShapes(activatedShape, clickedShape);
                 if (link) {
@@ -103,6 +106,12 @@ var TreeCanvas = (function () {
                 _this.treeService.deleteShape(shape);
             }
         });
+    };
+    TreeCanvas.prototype.selectedNodeDataChangeHandler = function (data) {
+        var selectedShape = this.getShape(this.selectedNodeId);
+        if (selectedShape) {
+            selectedShape.data = data;
+        }
     };
     return TreeCanvas;
 }());

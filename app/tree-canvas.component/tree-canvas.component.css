@@ -2,15 +2,13 @@ div {
     box-sizing: border-box;
 }
 
-.tree-canvas__right,
-.tree-canvas__left-top,
-.tree-canvas__left-bottom {
+.tree-canvas__right {
     border: solid 1px red;
 }
 
-.tree-canvas__left-top,
-.tree-canvas__left-bottom {
+.tree-canvas__left {
     padding: 5px;
+    border: solid 1px red;
 }
 
 .tree-canvas__wrapper {
@@ -20,12 +18,7 @@ div {
 }
 
 .tree-canvas__left {
-    width: 200px;
-}
-
-.tree-canvas__left-top,
-.tree-canvas__left-bottom {
-    height: 50%;
+    width: 300px;
 }
 
 .tree-canvas__right {

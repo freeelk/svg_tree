@@ -24,9 +24,9 @@ var TreeToolbox = (function () {
         this.stroke = 'red';
         this.fillColors = { reward: '#dedede', operator: '#9FD19B', filter: '#94CAFF', applicator: '#F66622' };
         this.shapes = [
-            { id: 'toolbox-0', type: "reward", x: 10, y: 10, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
-            { id: 'toolbox-1', type: "operator", x: 10, y: 60, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
-            { id: 'toolbox-5', type: "applicator", x: 10, y: 110, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None }
+            { id: 'toolbox-0', type: "reward", x: 10, y: 10, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None, data: { name: '' } },
+            { id: 'toolbox-1', type: "operator", x: 10, y: 60, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None, data: { name: '' } },
+            { id: 'toolbox-5', type: "applicator", x: 10, y: 110, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None, data: { name: '' } }
         ];
         this.create = new core_1.EventEmitter();
         this.delete = new core_1.EventEmitter();
@@ -50,7 +50,7 @@ var TreeToolbox = (function () {
                 this.data('origTransform', this.transform().local);
             }, function () {
                 var bBox = this.getBBox();
-                that.create.emit({ id: '', type: shape.type, x: bBox.x, y: bBox.y, width: 100, height: 40, selected: false });
+                that.create.emit({ id: '', type: shape.type, x: bBox.x, y: bBox.y, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None, data: { name: 'new node' } });
                 this.attr({
                     transform: this.data('origTransform') + (this.data('origTransform') ? "T" : "t") + [0, 0]
                 });

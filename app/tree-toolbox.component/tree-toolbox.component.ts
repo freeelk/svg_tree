@@ -25,9 +25,9 @@ export class TreeToolbox implements OnInit {
     fillColors = { reward: '#dedede', operator: '#9FD19B', filter: '#94CAFF', applicator: '#F66622' };
 
     shapes: Shape[] = [
-        { id: 'toolbox-0', type: "reward", x: 10, y: 10, width: 100, height: 40, selected: ShapeSelection.None },
-        { id: 'toolbox-1', type: "operator", x: 10, y: 60, width: 100, height: 40, selected: ShapeSelection.None },
-        { id: 'toolbox-5', type: "applicator", x: 10, y: 110, width: 100, height: 40, selected: ShapeSelection.None }
+        { id: 'toolbox-0', type: "reward", x: 10, y: 10, width: 100, height: 40, selected: ShapeSelection.None, data: {name: ''} },
+        { id: 'toolbox-1', type: "operator", x: 10, y: 60, width: 100, height: 40, selected: ShapeSelection.None, data: {name: ''} },
+        { id: 'toolbox-5', type: "applicator", x: 10, y: 110, width: 100, height: 40, selected: ShapeSelection.None, data: {name: ''} }
     ];
 
     deleteButton: any;
@@ -62,7 +62,7 @@ export class TreeToolbox implements OnInit {
                 },
                 function () {
                     let bBox = this.getBBox();
-                    that.create.emit({ id: '', type: shape.type, x: bBox.x, y: bBox.y, width: 100, height: 40, selected: false });
+                    that.create.emit({ id: '', type: shape.type, x: bBox.x, y: bBox.y, width: 100, height: 40, selected: ShapeSelection.None,  data: {name: 'new node'} });
                     this.attr({
                         transform: this.data('origTransform') + (this.data('origTransform') ? "T" : "t") + [0, 0]
                     });

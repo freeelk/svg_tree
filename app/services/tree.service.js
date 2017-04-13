@@ -12,12 +12,12 @@ require("rxjs/add/operator/catch");
 var shape_selection_enum_1 = require("../shared/shape-selection.enum");
 var angular2_uuid_1 = require("angular2-uuid");
 var shapes = [
-    { id: angular2_uuid_1.UUID.UUID(), type: "reward", x: 200, y: 30, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
-    { id: angular2_uuid_1.UUID.UUID(), type: "operator", x: 300, y: 220, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
-    { id: angular2_uuid_1.UUID.UUID(), type: "reward", x: 800, y: 30, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
-    { id: angular2_uuid_1.UUID.UUID(), type: "reward", x: 540, y: 30, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
-    { id: angular2_uuid_1.UUID.UUID(), type: "reward", x: 400, y: 30, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
-    { id: angular2_uuid_1.UUID.UUID(), type: "applicator", x: 400, y: 400, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None }
+    { id: angular2_uuid_1.UUID.UUID(), type: "reward", x: 200, y: 30, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None, data: { name: 'node1' } },
+    { id: angular2_uuid_1.UUID.UUID(), type: "operator", x: 300, y: 220, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None, data: { name: 'node2' } },
+    { id: angular2_uuid_1.UUID.UUID(), type: "reward", x: 800, y: 30, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None, data: { name: 'node2' } },
+    { id: angular2_uuid_1.UUID.UUID(), type: "reward", x: 540, y: 30, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None, data: { name: 'node4' } },
+    { id: angular2_uuid_1.UUID.UUID(), type: "reward", x: 400, y: 30, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None, data: { name: 'node5' } },
+    { id: angular2_uuid_1.UUID.UUID(), type: "applicator", x: 400, y: 400, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None, data: { name: 'node6' } }
 ];
 var links = [
     { id: 'link-0', shapeFromId: shapes[0].id, shapeToId: shapes[1].id, selected: false },

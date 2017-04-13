@@ -31,9 +31,9 @@ var TreeShape = (function () {
     TreeShape.prototype.ngOnInit = function () {
         this.canvas = this.parent.canvas;
         var box = this.canvas.rect(this.x, this.y, this.width, this.height, this.rx, this.ry).attr({ fill: this.fillColors[this.type], stroke: this.stroke });
-        var textId = this.canvas.text(this.x + 5, this.y + 35, this.id).attr({ 'font-size': 15 });
+        this.textName = this.canvas.text(this.x + 5, this.y + 35, this.name).attr({ 'font-size': 15 });
         var textType = this.canvas.text(this.x + 5, this.y + 15, this.type).attr({ 'font-size': 12 });
-        this.shape = this.canvas.g(box, textId, textType);
+        this.shape = this.canvas.g(box, this.textName, textType);
         this.shape.attr({ id: this.id });
         if (this.selected === shape_selection_enum_1.ShapeSelection.Selected) {
             this.shape.attr({ strokeWidth: 1 });
@@ -89,6 +89,9 @@ var TreeShape = (function () {
             }
             ;
         }
+        if (changes['name']) {
+            this.textName.attr({ text: changes['name'].currentValue });
+        }
     };
     TreeShape.prototype.ngOnDestroy = function () {
         console.log('destroy ' + this.id);
@@ -107,7 +110,7 @@ TreeShape = __decorate([
         selector: 'tree-shape',
         templateUrl: 'tree-shape.component.html',
         styleUrls: ['tree-shape.component.css'],
-        inputs: ['id', 'type', 'x', 'y', 'width', 'height', 'fill', 'selected'],
+        inputs: ['id', 'type', 'x', 'y', 'width', 'height', 'fill', 'selected', 'name', 'data'],
         outputs: ['select', 'move']
     }),
     __param(0, core_1.Inject(core_1.forwardRef(function () { return tree_canvas_component_1.TreeCanvas; }))),

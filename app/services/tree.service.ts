@@ -4,16 +4,17 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Shape } from '../shared/shape';
 import { Link } from '../shared/link';
+import { TreeNodeData } from '../shared/tree-node-data';
 import { ShapeSelection } from '../shared/shape-selection.enum';
 import { UUID } from 'angular2-uuid';
 
 let shapes = [
-    { id: UUID.UUID(), type: "reward", x: 200, y: 30, width: 100, height: 40, selected: ShapeSelection.None },
-    { id: UUID.UUID(), type: "operator", x: 300, y: 220, width: 100, height: 40, selected: ShapeSelection.None },
-    { id: UUID.UUID(), type: "reward", x: 800, y: 30, width: 100, height: 40, selected: ShapeSelection.None },
-    { id: UUID.UUID(), type: "reward", x: 540, y: 30, width: 100, height: 40, selected: ShapeSelection.None },
-    { id: UUID.UUID(), type: "reward", x: 400, y: 30, width: 100, height: 40, selected: ShapeSelection.None },
-    { id: UUID.UUID(), type: "applicator", x: 400, y: 400, width: 100, height: 40, selected: ShapeSelection.None }
+    { id: UUID.UUID(), type: "reward", x: 200, y: 30, width: 100, height: 40, selected: ShapeSelection.None, data: {name: 'node1'} },
+    { id: UUID.UUID(), type: "operator", x: 300, y: 220, width: 100, height: 40, selected: ShapeSelection.None, data: {name: 'node2'} },
+    { id: UUID.UUID(), type: "reward", x: 800, y: 30, width: 100, height: 40, selected: ShapeSelection.None, data: {name: 'node2'} },
+    { id: UUID.UUID(), type: "reward", x: 540, y: 30, width: 100, height: 40, selected: ShapeSelection.None, data: {name: 'node4'} },
+    { id: UUID.UUID(), type: "reward", x: 400, y: 30, width: 100, height: 40, selected: ShapeSelection.None, data: {name: 'node5'} },
+    { id: UUID.UUID(), type: "applicator", x: 400, y: 400, width: 100, height: 40, selected: ShapeSelection.None, data: {name: 'node6'} }
 ];
 
 let links = [

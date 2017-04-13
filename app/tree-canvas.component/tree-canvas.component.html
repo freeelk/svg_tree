@@ -1,11 +1,6 @@
 <div class="tree-canvas__wrapper">
     <div class="tree-canvas__left">
-        <div class="tree-canvas__left-top">
-            left top
-        </div>
-        <div class="tree-canvas__left-bottom">
-            left bottom
-        </div>
+        <node-data [data]="selectedNodeData" (dataChange)="selectedNodeDataChangeHandler($event)"></node-data>
     </div>
     <div class="tree-canvas__right">
         <svg id="tree-canvas" class="tree-canvas">
@@ -18,6 +13,8 @@
         [width]="shape.width" 
         [height]="shape.height" 
         [selected]="shape.selected"
+        [data]="shape.data"
+        [name]="shape.data.name"
         (select) = "shapeSelectHandler($event)"
         (move) = "shapeMoveHandler($event)">
     </tree-shape>

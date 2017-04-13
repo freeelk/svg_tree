@@ -2,6 +2,7 @@ import { Component, Inject, forwardRef, OnInit, OnChanges, OnDestroy, Input, Out
 import { TreeCanvas } from '../tree-canvas.component/tree-canvas.component';
 import { LinkPosition, LinkPositions } from '../shared/link-positions';
 import { ShapeSelection } from '../shared/shape-selection.enum';
+import { TreeNodeData } from '../shared/tree-node-data';
 import snap = require("snapsvg");
 
 @Component({
@@ -9,7 +10,7 @@ import snap = require("snapsvg");
     selector: 'tree-shape',
     templateUrl: 'tree-shape.component.html',
     styleUrls: ['tree-shape.component.css'],
-    inputs: ['id', 'type', 'x', 'y', 'width', 'height', 'fill', 'selected'],
+    inputs: ['id', 'type', 'x', 'y', 'width', 'height', 'fill', 'selected', 'name', 'data'],
     outputs: ['select', 'move']
 })
 export class TreeShape implements OnInit, OnChanges, OnDestroy {
@@ -21,7 +22,10 @@ export class TreeShape implements OnInit, OnChanges, OnDestroy {
     width: number;
     height: number;
     selected: ShapeSelection;
+    name: string;
+    data: TreeNodeData;
     shape: any;
+    textName: any;
 
     rx: number = 5;
     ry: number = 5;
@@ -39,10 +43,10 @@ export class TreeShape implements OnInit, OnChanges, OnDestroy {
     ngOnInit() {
         this.canvas = this.parent.canvas;
         let box = this.canvas.rect(this.x, this.y, this.width, this.height, this.rx, this.ry).attr({ fill: this.fillColors[this.type], stroke: this.stroke });
-        let textId =  this.canvas.text(this.x + 5, this.y + 35, this.id).attr({'font-size':15});
+        this.textName =  this.canvas.text(this.x + 5, this.y + 35, this.name).attr({'font-size':15});
         let textType =  this.canvas.text(this.x + 5, this.y + 15, this.type).attr({'font-size':12});
         
-        this.shape = this.canvas.g(box, textId, textType);
+        this.shape = this.canvas.g(box, this.textName, textType);
         this.shape.attr({ id: this.id });
 
         if (this.selected === ShapeSelection.Selected) {
@@ -94,6 +98,7 @@ export class TreeShape implements OnInit, OnChanges, OnDestroy {
         if (changes['selected']) {
             let selected: ShapeSelection;
             selected = changes['selected'].currentValue;
+            
 
             switch (selected) {
                 case ShapeSelection.None: 
@@ -109,6 +114,10 @@ export class TreeShape implements OnInit, OnChanges, OnDestroy {
                     this.shape.attr({ strokeWidth: 1 });
                 break;    
             };
+        }
+
+        if (changes['name']) {
+            this.textName.attr({text: changes['name'].currentValue});
         }
 
     }
