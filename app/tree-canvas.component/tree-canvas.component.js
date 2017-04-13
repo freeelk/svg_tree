@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var tree_link_component_1 = require("../tree-link.component/tree-link.component");
+var shape_selection_enum_1 = require("../shared/shape-selection.enum");
 var tree_service_1 = require("../services/tree.service");
 var snap = require("snapsvg");
 var TreeCanvas = (function () {
@@ -24,13 +25,13 @@ var TreeCanvas = (function () {
     };
     TreeCanvas.prototype.addShape = function (shapeType) {
         var id = 'shape-' + (this.shapes.length + 1);
-        var shape = { id: id, type: shapeType, x: 450, y: 10, xInit: 450, yInit: 10, width: 100, height: 40, selected: false };
+        var shape = { id: id, type: shapeType, x: 450, y: 10, xInit: 450, yInit: 10, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None };
         this.treeService.addShape(shape);
     };
     TreeCanvas.prototype.removeShape = function (id) {
         var _this = this;
         this.shapes.forEach(function (shape, index) {
-            if (shape.selected) {
+            if (shape.selected === shape_selection_enum_1.ShapeSelection.Selected) {
                 _this.treeService.deleteShape(shape);
             }
         });
@@ -53,13 +54,26 @@ var TreeCanvas = (function () {
             }
         });
     };
-    TreeCanvas.prototype.shapeSelectHandler = function (id) {
+    TreeCanvas.prototype.shapeSelectHandler = function (event) {
+        var activatedShape = this.shapes.find(function (shape) { return shape.selected === shape_selection_enum_1.ShapeSelection.Activated; });
+        if (activatedShape) {
+            var clickedShape = this.shapes.find(function (shape) { return shape.id === event.id; });
+            if (clickedShape !== activatedShape) {
+                var link = this.treeService.getLinkBetweenShapes(activatedShape, clickedShape);
+                if (link) {
+                    this.treeService.deleteLink(link);
+                }
+                else {
+                    this.addLink(activatedShape.id, clickedShape.id);
+                }
+            }
+        }
         this.shapes.forEach(function (shape) {
-            if (shape.id === id) {
-                shape.selected = true;
+            if (shape.id === event.id) {
+                shape.selected = event.selection;
             }
             else {
-                shape.selected = false;
+                shape.selected = shape_selection_enum_1.ShapeSelection.None;
             }
         });
     };

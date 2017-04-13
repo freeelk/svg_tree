@@ -1,6 +1,7 @@
 import { Component, Inject, forwardRef, OnInit, OnChanges, OnDestroy, Input, Output, EventEmitter, SimpleChange } from '@angular/core';
 import { TreeCanvas } from '../tree-canvas.component/tree-canvas.component';
 import { LinkPosition, LinkPositions } from '../shared/link-positions';
+import { ShapeSelection } from '../shared/shape-selection.enum';
 import snap = require("snapsvg");
 
 @Component({
@@ -19,7 +20,7 @@ export class TreeShape implements OnInit, OnChanges, OnDestroy {
     y: number;
     width: number;
     height: number;
-    selected: boolean;
+    selected: ShapeSelection;
     shape: any;
 
     rx: number = 5;
@@ -30,7 +31,7 @@ export class TreeShape implements OnInit, OnChanges, OnDestroy {
 
     initCompleted: boolean = false;
 
-    select: EventEmitter<string> = new EventEmitter<string>();
+    select: EventEmitter<any> = new EventEmitter<any>();
     move: EventEmitter<any> = new EventEmitter<any>();
 
     constructor( @Inject(forwardRef(() => TreeCanvas)) private parent: TreeCanvas) { }
@@ -38,15 +39,13 @@ export class TreeShape implements OnInit, OnChanges, OnDestroy {
     ngOnInit() {
         this.canvas = this.parent.canvas;
         let box = this.canvas.rect(this.x, this.y, this.width, this.height, this.rx, this.ry).attr({ fill: this.fillColors[this.type], stroke: this.stroke });
-
         let textId =  this.canvas.text(this.x + 5, this.y + 35, this.id).attr({'font-size':15});
         let textType =  this.canvas.text(this.x + 5, this.y + 15, this.type).attr({'font-size':12});
-        
         
         this.shape = this.canvas.g(box, textId, textType);
         this.shape.attr({ id: this.id });
 
-        if (this.selected) {
+        if (this.selected === ShapeSelection.Selected) {
             this.shape.attr({ strokeWidth: 1 });
         } else {
             this.shape.attr({ strokeWidth: 0 });
@@ -54,19 +53,14 @@ export class TreeShape implements OnInit, OnChanges, OnDestroy {
 
         let that = this;
         this.shape.click(function (event) {
-            that.selected = true;
-
-            that.select.emit(that.id);
+            that.selected = ShapeSelection.Selected;
+            that.select.emit({id: that.id, selection: that.selected});
         });
 
          this.shape.dblclick(function (event) {
-              that.shape.attr({ 'stroke-dasharray': '5'});
-            snap.animate(0,60, function( value ) {
-               that.shape.attr({ 'stroke-dashoffset': value * 10 });
-            }, 20000);
+              that.selected = ShapeSelection.Activated;
+               that.select.emit({id: that.id, selection: that.selected});
          });
-
-        
 
         this.shape.drag(
             function (dx, dy) {
@@ -98,11 +92,23 @@ export class TreeShape implements OnInit, OnChanges, OnDestroy {
         }
 
         if (changes['selected']) {
-            if (changes['selected'].currentValue == true) {
-                this.shape.attr({ strokeWidth: 1 });
-            } else {
-                this.shape.attr({ strokeWidth: 0 });
-            }
+            let selected: ShapeSelection;
+            selected = changes['selected'].currentValue;
+
+            switch (selected) {
+                case ShapeSelection.None: 
+                    this.shape.attr({ 'stroke-dasharray': '0'});
+                    this.shape.attr({ strokeWidth: 0 });
+                break
+                case ShapeSelection.Selected:
+                    this.shape.attr({ 'stroke-dasharray': '0'});
+                    this.shape.attr({ strokeWidth: 1 });
+                break
+                case ShapeSelection.Activated:
+                    this.shape.attr({ 'stroke-dasharray': '5'});
+                    this.shape.attr({ strokeWidth: 1 });
+                break;    
+            };
         }
 
     }

@@ -4,14 +4,15 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Shape } from '../shared/shape';
 import { Link } from '../shared/link';
+import { ShapeSelection } from '../shared/shape-selection.enum'
 
 let shapes = [
-    { id: 'shape-0', type: "reward", x: 200, y: 30, width: 100, height: 40, selected: false },
-    { id: 'shape-1', type: "operator", x: 300, y: 220, width: 100, height: 40, selected: false },
-    { id: 'shape-2', type: "reward", x: 800, y: 30, width: 100, height: 40, selected: false },
-    { id: 'shape-3', type: "reward", x: 540, y: 30, width: 100, height: 40, selected: false },
-    { id: 'shape-4', type: "reward", x: 400, y: 30, width: 100, height: 40, selected: false },
-    { id: 'shape-5', type: "applicator", x: 400, y: 400, width: 100, height: 40, selected: false }
+    { id: 'shape-0', type: "reward", x: 200, y: 30, width: 100, height: 40, selected: ShapeSelection.None },
+    { id: 'shape-1', type: "operator", x: 300, y: 220, width: 100, height: 40, selected: ShapeSelection.None },
+    { id: 'shape-2', type: "reward", x: 800, y: 30, width: 100, height: 40, selected: ShapeSelection.None },
+    { id: 'shape-3', type: "reward", x: 540, y: 30, width: 100, height: 40, selected: ShapeSelection.None },
+    { id: 'shape-4', type: "reward", x: 400, y: 30, width: 100, height: 40, selected: ShapeSelection.None },
+    { id: 'shape-5', type: "applicator", x: 400, y: 400, width: 100, height: 40, selected: ShapeSelection.None }
 ];
 
 let links = [
@@ -55,8 +56,28 @@ export class TreeService {
         });
     }
 
-    updateshape() {
+    updateShape() {
 
+    }
+
+    /**
+     * Возвращает объект связи между указанными в параметрах объектами
+     * 
+     * @param shapeOne Shape 
+     * @param shapeTwo Shape
+     * @returns Link Найденная связь, undefined, если связи нет
+     */
+    getLinkBetweenShapes(shapeOne: Shape, shapeTwo: Shape): Link {
+        let result: Link;
+
+        links.forEach(link=>{
+            if ((link.shapeFromId === shapeOne.id && link.shapeToId === shapeTwo.id) || 
+                (link.shapeFromId === shapeTwo.id && link.shapeToId === shapeOne.id)) {
+                result = link;
+            }
+        });
+
+        return result;
     }
 
     getLinks() {

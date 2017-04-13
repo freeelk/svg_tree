@@ -1,3 +1,5 @@
+import { ShapeSelection } from '../shared/shape-selection.enum';
+
 export class Shape {
     id: string;
     type: string;
@@ -5,5 +7,5 @@ export class Shape {
     y: number;
     width: number;
     height: number;
-    selected: boolean;
+    selected: ShapeSelection;
 }

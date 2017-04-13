@@ -9,13 +9,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 require("rxjs/add/operator/map");
 require("rxjs/add/operator/catch");
+var shape_selection_enum_1 = require("../shared/shape-selection.enum");
 var shapes = [
-    { id: 'shape-0', type: "reward", x: 200, y: 30, width: 100, height: 40, selected: false },
-    { id: 'shape-1', type: "operator", x: 300, y: 220, width: 100, height: 40, selected: false },
-    { id: 'shape-2', type: "reward", x: 800, y: 30, width: 100, height: 40, selected: false },
-    { id: 'shape-3', type: "reward", x: 540, y: 30, width: 100, height: 40, selected: false },
-    { id: 'shape-4', type: "reward", x: 400, y: 30, width: 100, height: 40, selected: false },
-    { id: 'shape-5', type: "applicator", x: 400, y: 400, width: 100, height: 40, selected: false }
+    { id: 'shape-0', type: "reward", x: 200, y: 30, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
+    { id: 'shape-1', type: "operator", x: 300, y: 220, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
+    { id: 'shape-2', type: "reward", x: 800, y: 30, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
+    { id: 'shape-3', type: "reward", x: 540, y: 30, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
+    { id: 'shape-4', type: "reward", x: 400, y: 30, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
+    { id: 'shape-5', type: "applicator", x: 400, y: 400, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None }
 ];
 var links = [
     { id: 'link-0', shapeFromId: 'shape-0', shapeToId: 'shape-1', selected: false },
@@ -53,7 +54,24 @@ var TreeService = (function () {
             _this.deleteLink(link);
         });
     };
-    TreeService.prototype.updateshape = function () {
+    TreeService.prototype.updateShape = function () {
+    };
+    /**
+     * Возвращает объект связи между указанными в параметрах объектами
+     *
+     * @param shapeOne Shape
+     * @param shapeTwo Shape
+     * @returns Link Найденная связь, undefined, если связи нет
+     */
+    TreeService.prototype.getLinkBetweenShapes = function (shapeOne, shapeTwo) {
+        var result;
+        links.forEach(function (link) {
+            if ((link.shapeFromId === shapeOne.id && link.shapeToId === shapeTwo.id) ||
+                (link.shapeFromId === shapeTwo.id && link.shapeToId === shapeOne.id)) {
+                result = link;
+            }
+        });
+        return result;
     };
     TreeService.prototype.getLinks = function () {
         return links;

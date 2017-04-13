@@ -1,5 +1,6 @@
 import { Component, OnInit, QueryList, ViewChildren,  EventEmitter } from '@angular/core';
 import { Shape } from '../shared/shape';
+import { ShapeSelection } from '../shared/shape-selection.enum'
 import snap = require('snapsvg');
 
 
@@ -24,9 +25,9 @@ export class TreeToolbox implements OnInit {
     fillColors = { reward: '#dedede', operator: '#9FD19B', filter: '#94CAFF', applicator: '#F66622' };
 
     shapes: Shape[] = [
-        { id: 'toolbox-0', type: "reward", x: 10, y: 10, width: 100, height: 40, selected: false },
-        { id: 'toolbox-1', type: "operator", x: 10, y: 60, width: 100, height: 40, selected: false },
-        { id: 'toolbox-5', type: "applicator", x: 10, y: 110, width: 100, height: 40, selected: false }
+        { id: 'toolbox-0', type: "reward", x: 10, y: 10, width: 100, height: 40, selected: ShapeSelection.None },
+        { id: 'toolbox-1', type: "operator", x: 10, y: 60, width: 100, height: 40, selected: ShapeSelection.None },
+        { id: 'toolbox-5', type: "applicator", x: 10, y: 110, width: 100, height: 40, selected: ShapeSelection.None }
     ];
 
     create: EventEmitter<any> = new EventEmitter<Shape>();

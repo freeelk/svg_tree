@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
+var shape_selection_enum_1 = require("../shared/shape-selection.enum");
 var snap = require("snapsvg");
 var TreeToolbox = (function () {
     function TreeToolbox() {
@@ -23,9 +24,9 @@ var TreeToolbox = (function () {
         this.stroke = 'red';
         this.fillColors = { reward: '#dedede', operator: '#9FD19B', filter: '#94CAFF', applicator: '#F66622' };
         this.shapes = [
-            { id: 'toolbox-0', type: "reward", x: 10, y: 10, width: 100, height: 40, selected: false },
-            { id: 'toolbox-1', type: "operator", x: 10, y: 60, width: 100, height: 40, selected: false },
-            { id: 'toolbox-5', type: "applicator", x: 10, y: 110, width: 100, height: 40, selected: false }
+            { id: 'toolbox-0', type: "reward", x: 10, y: 10, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
+            { id: 'toolbox-1', type: "operator", x: 10, y: 60, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None },
+            { id: 'toolbox-5', type: "applicator", x: 10, y: 110, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None }
         ];
         this.create = new core_1.EventEmitter();
     }

@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var tree_canvas_component_1 = require("../tree-canvas.component/tree-canvas.component");
 var link_positions_1 = require("../shared/link-positions");
-var snap = require("snapsvg");
+var shape_selection_enum_1 = require("../shared/shape-selection.enum");
 var TreeShape = (function () {
     function TreeShape(parent) {
         this.parent = parent;
@@ -35,7 +35,7 @@ var TreeShape = (function () {
         var textType = this.canvas.text(this.x + 5, this.y + 15, this.type).attr({ 'font-size': 12 });
         this.shape = this.canvas.g(box, textId, textType);
         this.shape.attr({ id: this.id });
-        if (this.selected) {
+        if (this.selected === shape_selection_enum_1.ShapeSelection.Selected) {
             this.shape.attr({ strokeWidth: 1 });
         }
         else {
@@ -43,14 +43,12 @@ var TreeShape = (function () {
         }
         var that = this;
         this.shape.click(function (event) {
-            that.selected = true;
-            that.select.emit(that.id);
+            that.selected = shape_selection_enum_1.ShapeSelection.Selected;
+            that.select.emit({ id: that.id, selection: that.selected });
         });
         this.shape.dblclick(function (event) {
-            that.shape.attr({ 'stroke-dasharray': '5' });
-            snap.animate(0, 60, function (value) {
-                that.shape.attr({ 'stroke-dashoffset': value * 10 });
-            }, 20000);
+            that.selected = shape_selection_enum_1.ShapeSelection.Activated;
+            that.select.emit({ id: that.id, selection: that.selected });
         });
         this.shape.drag(function (dx, dy) {
             this.attr({
@@ -73,12 +71,23 @@ var TreeShape = (function () {
             return;
         }
         if (changes['selected']) {
-            if (changes['selected'].currentValue == true) {
-                this.shape.attr({ strokeWidth: 1 });
+            var selected = void 0;
+            selected = changes['selected'].currentValue;
+            switch (selected) {
+                case shape_selection_enum_1.ShapeSelection.None:
+                    this.shape.attr({ 'stroke-dasharray': '0' });
+                    this.shape.attr({ strokeWidth: 0 });
+                    break;
+                case shape_selection_enum_1.ShapeSelection.Selected:
+                    this.shape.attr({ 'stroke-dasharray': '0' });
+                    this.shape.attr({ strokeWidth: 1 });
+                    break;
+                case shape_selection_enum_1.ShapeSelection.Activated:
+                    this.shape.attr({ 'stroke-dasharray': '5' });
+                    this.shape.attr({ strokeWidth: 1 });
+                    break;
             }
-            else {
-                this.shape.attr({ strokeWidth: 0 });
-            }
+            ;
         }
     };
     TreeShape.prototype.ngOnDestroy = function () {
