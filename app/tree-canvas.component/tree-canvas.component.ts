@@ -1,7 +1,6 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { TreeShape } from '../tree-shape.component/tree-shape.component';
 import { TreeLink } from '../tree-link.component/tree-link.component';
-
 import { Shape } from '../shared/shape';
 import { Link } from '../shared/link';
 import { ShapeSelection } from '../shared/shape-selection.enum';
@@ -69,10 +68,7 @@ export class TreeCanvas implements OnInit {
     }
 
     shapeSelectHandler(event) {
-
         let activatedShape = this.shapes.find(shape => shape.selected === ShapeSelection.Activated);
-
-
         if (activatedShape) {
             let clickedShape = this.shapes.find(shape => shape.id === event.id);
             if (clickedShape !== activatedShape) {
@@ -83,7 +79,6 @@ export class TreeCanvas implements OnInit {
                     this.addLink(activatedShape.id, clickedShape.id);
                 }
             }
-
         }
 
         this.shapes.forEach(shape => {
@@ -106,7 +101,6 @@ export class TreeCanvas implements OnInit {
         });
     }
 
-
     shapeMoveHandler(event) {
         let shape = this.treeService.getShape(event.id);
         shape.x = event.x;
@@ -120,6 +114,14 @@ export class TreeCanvas implements OnInit {
     shapeCreateHandler(event: Shape) {
         event.id = 'shape-' + (this.shapes.length + 1);
         this.treeService.addShape(event);
+    }
+
+    shapeDeleteHandler() {
+        this.shapes.forEach((shape, index) => {
+            if (shape.selected === ShapeSelection.Selected) {
+                this.treeService.deleteShape(shape);
+            }
+        });
     }
 
 }

@@ -100,6 +100,14 @@ var TreeCanvas = (function () {
         event.id = 'shape-' + (this.shapes.length + 1);
         this.treeService.addShape(event);
     };
+    TreeCanvas.prototype.shapeDeleteHandler = function () {
+        var _this = this;
+        this.shapes.forEach(function (shape, index) {
+            if (shape.selected === shape_selection_enum_1.ShapeSelection.Selected) {
+                _this.treeService.deleteShape(shape);
+            }
+        });
+    };
     return TreeCanvas;
 }());
 __decorate([

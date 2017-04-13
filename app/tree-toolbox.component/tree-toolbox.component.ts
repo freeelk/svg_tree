@@ -1,4 +1,4 @@
-import { Component, OnInit, QueryList, ViewChildren,  EventEmitter } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren, EventEmitter } from '@angular/core';
 import { Shape } from '../shared/shape';
 import { ShapeSelection } from '../shared/shape-selection.enum'
 import snap = require('snapsvg');
@@ -9,7 +9,7 @@ import snap = require('snapsvg');
     selector: 'tree-toolbox',
     templateUrl: 'tree-toolbox.component.html',
     styleUrls: ['tree-toolbox.component.css'],
-    outputs: ['create']
+    outputs: ['create', 'delete']
 
 })
 export class TreeToolbox implements OnInit {
@@ -17,7 +17,7 @@ export class TreeToolbox implements OnInit {
     x: number = 5;
     y: number = 5;
     width: number = 110;
-    height: number = 150;
+    height: number = 210;
     rx: number = 0;
     ry: number = 0;
     fill: string = '#CFFFCD';
@@ -30,8 +30,10 @@ export class TreeToolbox implements OnInit {
         { id: 'toolbox-5', type: "applicator", x: 10, y: 110, width: 100, height: 40, selected: ShapeSelection.None }
     ];
 
-    create: EventEmitter<any> = new EventEmitter<Shape>();
+    deleteButton: any;
 
+    create: EventEmitter<any> = new EventEmitter<Shape>();
+    delete: EventEmitter<any> = new EventEmitter<any>();
 
     constructor() {
 
@@ -60,12 +62,25 @@ export class TreeToolbox implements OnInit {
                 },
                 function () {
                     let bBox = this.getBBox();
-                    that.create.emit({ id: '', type: shape.type, x: bBox.x, y:  bBox.y, width: 100, height: 40, selected: false });
+                    that.create.emit({ id: '', type: shape.type, x: bBox.x, y: bBox.y, width: 100, height: 40, selected: false });
                     this.attr({
                         transform: this.data('origTransform') + (this.data('origTransform') ? "T" : "t") + [0, 0]
                     });
                 }
             );
+
+            let deleteButton = this.canvas.rect(this.x + 5, this.y + 160, 100, 40, this.rx, this.ry).attr({ fill: '#94caff', stroke: 'red', strokeWidth: 0 });
+            let deleteText1 = this.canvas.text(shape.x + 5, this.y + 160 + 15, "Удалить").attr({ 'font-size': 12 });
+            let deleteText2 = this.canvas.text(shape.x + 5, this.y + 160 + 30, "выбранный").attr({ 'font-size': 12 });
+            this.deleteButton = this.canvas.g(deleteButton, deleteText1, deleteText2);
+
+            this.deleteButton.mouseover(function () {
+                deleteButton.attr({ strokeWidth: 1 });
+            }).mouseout(function () {
+                 deleteButton.attr({ strokeWidth: 0 });
+            }).click(function(){
+                 that.delete.emit();
+            });
 
         });
     }

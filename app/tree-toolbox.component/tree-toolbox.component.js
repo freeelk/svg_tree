@@ -17,7 +17,7 @@ var TreeToolbox = (function () {
         this.x = 5;
         this.y = 5;
         this.width = 110;
-        this.height = 150;
+        this.height = 210;
         this.rx = 0;
         this.ry = 0;
         this.fill = '#CFFFCD';
@@ -29,6 +29,7 @@ var TreeToolbox = (function () {
             { id: 'toolbox-5', type: "applicator", x: 10, y: 110, width: 100, height: 40, selected: shape_selection_enum_1.ShapeSelection.None }
         ];
         this.create = new core_1.EventEmitter();
+        this.delete = new core_1.EventEmitter();
     }
     TreeToolbox.prototype.ngOnInit = function () {
         var _this = this;
@@ -54,6 +55,17 @@ var TreeToolbox = (function () {
                     transform: this.data('origTransform') + (this.data('origTransform') ? "T" : "t") + [0, 0]
                 });
             });
+            var deleteButton = _this.canvas.rect(_this.x + 5, _this.y + 160, 100, 40, _this.rx, _this.ry).attr({ fill: '#94caff', stroke: 'red', strokeWidth: 0 });
+            var deleteText1 = _this.canvas.text(shape.x + 5, _this.y + 160 + 15, "Удалить").attr({ 'font-size': 12 });
+            var deleteText2 = _this.canvas.text(shape.x + 5, _this.y + 160 + 30, "выбранный").attr({ 'font-size': 12 });
+            _this.deleteButton = _this.canvas.g(deleteButton, deleteText1, deleteText2);
+            _this.deleteButton.mouseover(function () {
+                deleteButton.attr({ strokeWidth: 1 });
+            }).mouseout(function () {
+                deleteButton.attr({ strokeWidth: 0 });
+            }).click(function () {
+                that.delete.emit();
+            });
         });
     };
     return TreeToolbox;
@@ -64,7 +76,7 @@ TreeToolbox = __decorate([
         selector: 'tree-toolbox',
         templateUrl: 'tree-toolbox.component.html',
         styleUrls: ['tree-toolbox.component.css'],
-        outputs: ['create']
+        outputs: ['create', 'delete']
     }),
     __metadata("design:paramtypes", [])
 ], TreeToolbox);

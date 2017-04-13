@@ -1,18 +1,3 @@
-<div class="buttons-wrapper">
-    <select #shapeType>
-        <option value="reward">Вознаграждение</option>
-        <option value="operator">Оператор</option>
-        <option value="filter">Фильтр</option>
-        <option value="applicator">Аппликатор</option>
-    </select>
-    <button (click)="addShape(shapeType.value)">Добавить объект</button>
-    <button (click)="removeShape()">Удалить выделенный объект</button>
-    <input #linkIdFrom type="text" placeholder="id From">
-    <input #linkIdTo type="text" placeholder="id To">
-    <button (click)="addLink(linkIdFrom.value, linkIdTo.value)">Добавить связь</button>
-    <button (click)="removeLink()">Удалить выделенную связь</button>
-</div>
-
 <div class="tree-canvas__wrapper">
     <div class="tree-canvas__left">
         <div class="tree-canvas__left-top">
@@ -24,7 +9,7 @@
     </div>
     <div class="tree-canvas__right">
         <svg id="tree-canvas" class="tree-canvas">
-    <tree-toolbox (create) = "shapeCreateHandler($event)"></tree-toolbox>
+    <tree-toolbox (create) = "shapeCreateHandler($event)" (delete) = "shapeDeleteHandler()"></tree-toolbox>
     <tree-shape *ngFor="let shape of shapes" 
         [id]="shape.id" 
         [type]="shape.type"
